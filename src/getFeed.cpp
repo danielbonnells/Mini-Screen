@@ -133,7 +133,7 @@ const char *test_root_ca = "-----BEGIN CERTIFICATE-----\n"
 //     return c;
 // }
 
-const char *httpGETRequest(String endpoint, String routeId, String stopId)
+const char *httpGETRequest(String endpoint, String stopName, String direction)
 {
     String response = "";
     WiFiClientSecure client;
@@ -151,8 +151,8 @@ const char *httpGETRequest(String endpoint, String routeId, String stopId)
     {
         Serial.println("Connected to server!");
         // Make a HTTP request:
-        //https://llenno.com/api/Stop/F27S?route=G
-        String uri = "/api/" + endpoint + stopId + "?route=" + routeId;
+        //https://llenno.com/api/ESP32?stopName=Grand Central-42 St&direction=BOTH
+        String uri = "/api/" + endpoint + "?stopName=" + stopName + "&direction=" + direction;
         client.println("GET " + uri + " HTTP/1.0");
         Serial.println("GET " + uri + " HTTP/1.0");
         client.println("Host: llenno.com");
