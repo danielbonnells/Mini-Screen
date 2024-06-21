@@ -209,7 +209,7 @@ void loop()
 
     Serial.println(mainDisplayIndex);
     Serial.println(mainDisplayTextArray.size());
-    if (true)//mainDisplayTextArray.size() != 0 && mainDisplayIndex < mainDisplayTextArray.size()
+    if (mainDisplayTextArray.size() != 0 && mainDisplayIndex < mainDisplayTextArray.size())//mainDisplayTextArray.size() != 0 && mainDisplayIndex < mainDisplayTextArray.size()
     {
       const char *text = mainDisplayTextArray[mainDisplayIndex].as<const char *>();
       Serial.println(text);
