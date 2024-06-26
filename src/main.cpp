@@ -20,9 +20,12 @@ int textSizeOled = 2;
 // const char *response = nullptr;
 const char *responseAlerts = nullptr;
 int mainDisplayIndex = 0;
+int secondaryDisplayIndex = 0;
+unsigned long secondaryDisplayInterval = 0;
 
 JsonDocument doc;
 JsonArray mainDisplayTextArray;
+JsonArray secondaryDisplayTextArray;
 
 
 #define OLED_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin)
@@ -196,12 +199,24 @@ void setup()
   }
 }
 
+// bool readAlertHelper(){
+//     int secondaryTextIndex = 0;
+//     for (const JsonVariant& element : secondaryDisplayTextArray) {
+//       const char* text = element.as<const char*>();
+//       Serial.println(text);
+//       updateOled(text);
+//     }
+// }
+
 void loop()
 {
 
   if (start(doc)) //&& ledMatrix.displayAnimate()
   {
     mainDisplayTextArray = doc["mainDisplayText"].as<JsonArray>();
+
+    secondaryDisplayTextArray = doc["secondaryDisplayText"][0];
+
   }
 
   if (ledMatrix.displayAnimate())
@@ -223,6 +238,22 @@ void loop()
     else
     {
       mainDisplayIndex = 0;
+    }
+  }
+
+  // Handle OLED display updates
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+
+    if (secondaryDisplayIndex < secondaryDisplayTextArray.size()) {
+      const char* text = secondaryDisplayTextArray[secondaryDisplayIndex];
+      updateOled(text);
+      secondaryDisplayInterval = strlen(text) * 200; // Dynamic delay based on text length
+      secondaryDisplayIndex++;
+    } else {
+      secondaryDisplayIndex = 0; // Reset index after completing the array
+      secondaryDisplayInterval = 5000; // Delay before starting to display new data, adjust as needed
     }
   }
 }
